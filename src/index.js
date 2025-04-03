@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import { Client, GatewayIntentBits } from "discord.js";
+import { Client, GatewayIntentBits, EmbedBuilder } from "discord.js";
 import { registerCommands } from "./registerCommands.js";
 import { readdirSync } from "fs";
 import { resolve, dirname } from "path";
@@ -19,7 +19,45 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers,
   ],
+});
+
+// Function to find a channel by name
+function findChannelByName(guild, channelName) {
+  return guild.channels.cache.find(
+      (channel) => channel.name.toLowerCase() === channelName.toLowerCase()
+  );
+}
+
+// When a new member joins
+client.on("guildMemberAdd", (member) => {
+  const channel = findChannelByName(member.guild, "welcome");
+  if (!channel) return;
+
+  const embed = new EmbedBuilder()
+      .setColor("#ffcc00") // Cute yellow color
+      .setTitle("🎉 Welcome to the Server!")
+      .setDescription(`👋 Hey <@${member.id}>, we're so happy to have you here! 🌟\nMake yourself at home and have fun! 🎈`)
+      .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+      .setFooter({ text: `Welcome to ${member.guild.name}!`, iconURL: member.guild.iconURL({ dynamic: true }) });
+
+  channel.send({ embeds: [embed] });
+});
+
+// When a member leaves
+client.on("guildMemberRemove", (member) => {
+  const channel = findChannelByName(member.guild, "goodbye");
+  if (!channel) return;
+
+  const embed = new EmbedBuilder()
+      .setColor("#ff6666") // Cute red color
+      .setTitle("💔 Goodbye, Friend!")
+      .setDescription(`😢 **${member.user.tag}** just left the server...\nWe hope to see you again someday! 🌠`)
+      .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+      .setFooter({ text: `Goodbye from ${member.guild.name}!`, iconURL: member.guild.iconURL({ dynamic: true }) });
+
+  channel.send({ embeds: [embed] });
 });
 
 // Load commands dynamically
