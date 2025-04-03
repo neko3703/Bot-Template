@@ -1,3 +1,6 @@
+// this is used for prefix commands => [client, interactionOrMessage, args]
+import { EmbedBuilder } from "discord.js"; // use this to import packages from discord.js in your command files, if you are using any...
+
 export default async (client, interactionOrMessage, args) => {
     function formatTime(milliseconds) {
       const totalSeconds = Math.floor(milliseconds / 1000);
