@@ -1,3 +1,5 @@
+// This is customized for my bot. Feel free to update this as your bot's needs
+
 import { commandsGlobal, commandsGuild } from "../registerCommands.js";
 import { EmbedBuilder } from "discord.js";
 
@@ -20,7 +22,6 @@ const proTips = [
   "Want to report a bug or suggest a feature? Contact my developer at `contact@nekocode.in` or use /report-issue",
   "Did you know? You can use the prefix command `quote` to get a random inspirational quote!",
   "For advanced users: Use `/info` to get detailed bot stats!",
-  // "Feeling lucky? Try `!random` to see what happens!",
   "You can mention me directly to check my prefixes!",
   "Need assistance? Try using `/raise-ticket` to get help!",
   "Try using Slash Commands for a smoother experience!",
