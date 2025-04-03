@@ -1,3 +1,5 @@
+// Handling interactions liek prefix and slash commands and button listeners
+
 export default async (client, interaction, commands) => {
   if (interaction.isChatInputCommand()) {
       const command = commands.get(interaction.commandName);
