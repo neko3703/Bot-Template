@@ -18,7 +18,7 @@ const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.MessageContent, // Requires message content intent to be enabled
     GatewayIntentBits.GuildMembers, // Requires the GUILD_MEMBERS intent to be enabled
   ],
 });
