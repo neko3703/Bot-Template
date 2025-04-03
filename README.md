@@ -49,11 +49,13 @@ A simple and efficient template for creating a Discord bot using JavaScript. Thi
 
 ```
 📦 YOUR_REPO_NAME
- ┣ 📂 commands     # Command files go here
- ┣ 📂 events       # Event handler files go here
+ ┣ 📂 src            # Source folder containing bot logic
+ ┃ ┣ 📂 commands     # Command files go here
+ ┃ ┣ 📂 events       # Event handler files go here
+ ┃ ┣ 📂 interactions # Interaction (slash commands) handlers
+ ┃ ┣ 📜 index.js     # Main bot entry point
+ ┃ ┣ 📜 registerCommands.js # Slash command registration
  ┣ 📜 .env         # Environment variables
- ┣ 📜 .gitignore   # Ignore node_modules and env file
- ┣ 📜 index.js     # Main bot entry point
  ┣ 📜 package.json # Dependencies and metadata
  ┗ 📜 README.md    # Documentation
 ```
