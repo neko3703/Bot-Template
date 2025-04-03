@@ -1,6 +1,11 @@
-import { EmbedBuilder } from "discord.js";
+// This is used in slash commands => [client, interaction]
+
+import { EmbedBuilder } from "discord.js"; // Importing stuff from discord.js library in your commands
+// You can import any other libraries you want. Just install it in your system using npm install <pkg_name> and you are all set
 
 export default async (client, interaction) => {
+  // Your code for slash command goes here
+  
   const start = Date.now(); // Record start time
 
   // Defer the reply to get accurate response time
