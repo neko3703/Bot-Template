@@ -21,23 +21,27 @@ A simple and efficient template for creating a Discord bot using JavaScript. Thi
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME.git
-   cd YOUR_REPO_NAME
+   git clone https://github.com/neko3703/Bot-Template.git
+   cd Bot-Template
    ```
 
 2. **Install dependencies**
 
    ```bash
-   npm install
+   npm install discord.js@latest
    ```
 
 3. **Set up environment variables**
 
-   Create a `.env` file in the root directory and add your bot token:
+   A `.env` file has already been created in the root directory. Here, you can add your bot's token, bot's ID, bot's client secret (optional) and guild ID of your server to start with:
 
    ```env
-   BOT_TOKEN=your-bot-token-here
+   TOKEN = BOT_TOKEN_HERE # Place your bot token here
+   CLIENT_ID = 123456789 # Your bot ID
+   ClientSecret = YOUR_BOT_CLIENT_SECRET #Optional
+   GuildID = 123456789 # Your guild ID
    ```
+   More can be added as per needs
 
 4. **Run the bot**
 
@@ -62,17 +66,14 @@ A simple and efficient template for creating a Discord bot using JavaScript. Thi
 
 ## Usage
 
-- Add commands in the `commands/` folder.
-- Add event handlers in the `events/` folder.
+- Add commands (prefix and slash commands) in the `commands/` folder.
+- Event handlers are present in the `events/` folder.
 - Modify `index.js` to customize bot behavior.
-
-## Contributing
-
-Feel free to fork this repository and submit pull requests to improve the template.
+- The bot supports multiple prefixes. To update the prefixes, go to `messageCreate.js` file in the `events/` folder.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://mit-license.org/) file for details.
 
 ## Contact
 
