@@ -24,6 +24,7 @@ A simple and efficient template for creating a Discord bot using JavaScript. Thi
    git clone https://github.com/neko3703/Bot-Template.git
    cd Bot-Template
    npm init -y
+   npm install discord.js@latest
    ```
 
 2. **Install dependencies**
