@@ -45,24 +45,24 @@ async function createPingEmbed(client, interaction, latency) {
 
   const embed = new EmbedBuilder()
     .setColor(0xfaafba)
-    .setTitle('🏓“ Pong!')
+    .setTitle('🏓 Pong!')
     .setDescription(
       `${signal} **Bot Latency:** ${latency}ms ${latencyBar(latency)}\n` +
-      `ðŸ“¡ **API Latency:** ${apiLatency}ms\n\n` +
-      `ðŸ§  **Memory Usage:** ${memoryUsage}MB / ${totalMem}MB\n` +
-      `âš™ï¸ **CPU Usage:** User ${cpuUserMs}ms | System ${cpuSystemMs}ms\n\n` +
-      `<:nodejs:1099759085571801210> **Node.js Version:** ${nodeVersion}\n` +
-      `<:discordjs:1106964170131386468> **Discord.js Version:** ${djsVersion}`
+      `📡 **API Latency:** ${apiLatency}ms\n\n` +
+      `🧠 **Memory Usage:** ${memoryUsage}MB / ${totalMem}MB\n` +
+      `💽 **CPU Usage:** User ${cpuUserMs}ms | System ${cpuSystemMs}ms\n\n` +
+      `<📦 **Node.js Version:** ${nodeVersion}\n` +
+      `<📦 **Discord.js Version:** ${djsVersion}`
     )
     .addFields(
       { name: '🧩 Shard ID', value: `${client.shard?.ids?.[0] ?? interaction.guild?.shardId ?? 'None'}`, inline: true },
-      { name: 'ðŸ”¢ Process ID', value: `${process.pid}`, inline: true },
-      { name: 'ðŸ–¥ Platform', value: `${os.platform()} ${os.arch()}`, inline: true },
-      { name: 'ðŸ“† Bot Created', value: `<t:${Math.floor(client.user.createdTimestamp / 1000)}:R>`, inline: true },
-      { name: 'ðŸ§® CPU Cores', value: `${os.cpus().length}`, inline: true }
+      { name: '📟 Process ID', value: `${process.pid}`, inline: true },
+      { name: '💻 Platform', value: `${os.platform()} ${os.arch()}`, inline: true },
+      { name: '🗓️ Bot Created', value: `<t:${Math.floor(client.user.createdTimestamp / 1000)}:R>`, inline: true },
+      { name: '📟 CPU Cores', value: `${os.cpus().length}`, inline: true }
     )
     .setFooter({
-      text: 'Powered by Neko Code âš¡',
+      text: 'Powered by Neko Code 😺,
       iconURL: client.user?.displayAvatarURL()
     })
     .setTimestamp();
