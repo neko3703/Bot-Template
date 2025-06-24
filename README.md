@@ -55,7 +55,7 @@ A simple and efficient template for creating a Discord bot using JavaScript. Thi
 ```
 📦 YOUR_REPO_NAME
  ┣ 📂 src            # Source folder containing bot logic
- ┃ ┣ 📂 commands     # Command files go here
+ ┃ ┣ 📂 commands     # Command files go here (slash and prefix both)
  ┃ ┣ 📂 events       # Event handler files go here
  ┃ ┣ 📂 interactions # Interaction (slash commands) handlers
  ┃ ┣ 📜 index.js     # Main bot entry point
@@ -78,7 +78,7 @@ This project is licensed under the MIT License - see the [LICENSE](https://mit-l
 
 ## Contact
 
-If you have any questions or suggestions, feel free to reach out!
+If you have any questions or suggestions, feel free to reach out at [contact@nekocode.in](mailto:contact@nekocode.in)!
 
 ---
 Happy Coding! 🚀
