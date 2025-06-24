@@ -9,7 +9,7 @@ import process from 'process';
 import { version as djsVersion } from 'discord.js';
 import { version as nodeVersion } from 'process';
 
-//
+// Calculating latency bar length
 function latencyBar(ms) {
   const totalBlocks = 10;
   const filledBlocks = Math.min(Math.floor((ms / 1000) * totalBlocks), totalBlocks);
@@ -27,6 +27,7 @@ async function createPingEmbed(client, interaction, latency) {
   const memoryUsage = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
   const totalMem = (os.totalmem() / 1024 / 1024).toFixed(2);
 
+// Replace the signal value to the different emojis for high and low ping
   let signal;
   switch (true) {
     case latency <= 100:
@@ -44,7 +45,7 @@ async function createPingEmbed(client, interaction, latency) {
 
   const embed = new EmbedBuilder()
     .setColor(0xfaafba)
-    .setTitle('ðŸ“ Pong!')
+    .setTitle('🏓“ Pong!')
     .setDescription(
       `${signal} **Bot Latency:** ${latency}ms ${latencyBar(latency)}\n` +
       `ðŸ“¡ **API Latency:** ${apiLatency}ms\n\n` +
@@ -54,7 +55,7 @@ async function createPingEmbed(client, interaction, latency) {
       `<:discordjs:1106964170131386468> **Discord.js Version:** ${djsVersion}`
     )
     .addFields(
-      { name: 'ðŸ§© Shard ID', value: `${client.shard?.ids?.[0] ?? interaction.guild?.shardId ?? 'None'}`, inline: true },
+      { name: '🧩 Shard ID', value: `${client.shard?.ids?.[0] ?? interaction.guild?.shardId ?? 'None'}`, inline: true },
       { name: 'ðŸ”¢ Process ID', value: `${process.pid}`, inline: true },
       { name: 'ðŸ–¥ Platform', value: `${os.platform()} ${os.arch()}`, inline: true },
       { name: 'ðŸ“† Bot Created', value: `<t:${Math.floor(client.user.createdTimestamp / 1000)}:R>`, inline: true },
