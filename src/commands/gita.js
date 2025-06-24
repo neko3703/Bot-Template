@@ -1,4 +1,3 @@
-// this is used for prefix commands => [client, message, args]
 import { EmbedBuilder } from "discord.js"; // use this to import packages from discord.js in your command files, if you are using any...
 import fetch from "node-fetch";
 
