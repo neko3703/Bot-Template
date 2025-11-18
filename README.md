@@ -44,6 +44,7 @@ A simple and efficient template for creating a Discord bot using JavaScript. Thi
    GOOGLE_CLIENT_EMAIL = "XYZ" # Add from googleapis
    GOOGLE_PRIVATE_KEY = "ABC" # Add from googleapis
    DB_ID = "abcd1234" # Your google sheet ID for database
+   MODMAIL_LOG_CHANNEL = "1234567890"
    ```
    More can be added as per needs
 
