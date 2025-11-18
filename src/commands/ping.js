@@ -1,21 +1,11 @@
 import {
   EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle
 } from 'discord.js';
 import os from 'os';
 import process from 'process';
 import { version as djsVersion } from 'discord.js';
 import { version as nodeVersion } from 'process';
-
-// Calculating latency bar length
-function latencyBar(ms) {
-  const totalBlocks = 10;
-  const filledBlocks = Math.min(Math.floor((ms / 1000) * totalBlocks), totalBlocks);
-  const emptyBlocks = totalBlocks - filledBlocks;
-  return '🟩'.repeat(filledBlocks) + '⬜'.repeat(emptyBlocks);
-}
+import { performance } from 'perf_hooks';
 
 async function createPingEmbed(client, interaction, latency) {
   const apiLatency = client.ws.ping ?? 0;
@@ -27,42 +17,23 @@ async function createPingEmbed(client, interaction, latency) {
   const memoryUsage = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
   const totalMem = (os.totalmem() / 1024 / 1024).toFixed(2);
 
-// Replace the signal value to the different emojis for high and low ping
-  let signal;
-  switch (true) {
-    case latency <= 100:
-      signal = '<:full:1114619733212418068>';
-      break;
-    case latency <= 500:
-      signal = '<:excellent:1114619787981619292>';
-      break;
-    case latency <= 1000:
-      signal = '<:low:1114619850237673553>';
-      break;
-    default:
-      signal = '<:bad:1114619887411802254>';
-  }
+  let signal = "<:wifi:1393954319950413844>";
 
+  // Replace emoji in embed with your custom ones
   const embed = new EmbedBuilder()
     .setColor(0xfaafba)
     .setTitle('🏓 Pong!')
     .setDescription(
-      `${signal} **Bot Latency:** ${latency}ms ${latencyBar(latency)}\n` +
+      `${signal} **Bot Latency:** ${latency.toFixed(2)}ms\n` +
       `📡 **API Latency:** ${apiLatency}ms\n\n` +
-      `🧠 **Memory Usage:** ${memoryUsage}MB / ${totalMem}MB\n` +
-      `💽 **CPU Usage:** User ${cpuUserMs}ms | System ${cpuSystemMs}ms\n\n` +
-      `<📦 **Node.js Version:** ${nodeVersion}\n` +
-      `<📦 **Discord.js Version:** ${djsVersion}`
+      `<:RAM:1390884262999494726> **Memory Usage:** ${memoryUsage}MB / ${totalMem}MB\n` +
+      `<:CPU:1390885860450500618> **CPU Usage:** User ${cpuUserMs}ms | System ${cpuSystemMs}ms`
     )
     .addFields(
-      { name: '🧩 Shard ID', value: `${client.shard?.ids?.[0] ?? interaction.guild?.shardId ?? 'None'}`, inline: true },
-      { name: '📟 Process ID', value: `${process.pid}`, inline: true },
-      { name: '💻 Platform', value: `${os.platform()} ${os.arch()}`, inline: true },
-      { name: '🗓️ Bot Created', value: `<t:${Math.floor(client.user.createdTimestamp / 1000)}:R>`, inline: true },
-      { name: '📟 CPU Cores', value: `${os.cpus().length}`, inline: true }
+      { name: '<:CPU:1390885860450500618> CPU Cores', value: `${os.cpus().length}`, inline: true }
     )
     .setFooter({
-      text: 'Powered by Neko Code 😺,
+      text: 'Powered by Neko Code ⚡',
       iconURL: client.user?.displayAvatarURL()
     })
     .setTimestamp();
@@ -71,9 +42,11 @@ async function createPingEmbed(client, interaction, latency) {
 }
 
 export default async (client, interaction) => {
-  const start = Date.now();
+  const start = performance.now();
+
   await interaction.deferReply({ ephemeral: false });
-  const latency = Date.now() - start;
+
+  const latency = performance.now() - start;
 
   const embed = await createPingEmbed(client, interaction, latency);
 
