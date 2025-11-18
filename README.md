@@ -79,11 +79,28 @@ A simple and efficient template for creating a Discord bot using JavaScript. Thi
 
 ## License
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Copyright (c) 2025 Neko (nekocode.in)
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+Permission is granted to any individual who obtains a copy of this software and associated documentation files (the "Software") to use, modify, and run the Software for personal, private, and non-commercial purposes only.
 
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+The following restrictions apply:
+
+1. No Redistribution
+You may not copy, publish, redistribute, upload, or share the Software or any modified versions of it in any form, whether free or paid.
+
+2. No Commercial Use
+You may not sell, sublicense, or use the Software in any product or service that is commercial in nature.
+
+3. No Public Release
+You may not publicly host or distribute the Software, including but not limited to GitHub repositories, package managers, downloads, or public codebases.
+
+4. No Claims of Ownership
+You may not claim authorship, original creation, or exclusive rights to the Software or any part of it.
+
+5. Modifications Allowed for Personal Use Only
+You may modify or extend the Software, but such modifications must remain private and may not be shared or distributed.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM THE USE OF THE SOFTWARE.
 
 ## Contact
 
