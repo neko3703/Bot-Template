@@ -1,3 +1,9 @@
+// This is a slash command. Slash command has this function:
+
+// export default async (client, interaction) => {
+//   Your code goes here
+// }
+
 import { EmbedBuilder, PermissionFlagsBits } from "discord.js";
 
 export default async (client, interaction) => {
