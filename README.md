@@ -81,7 +81,7 @@ A simple and efficient template for creating a Discord bot using JavaScript. Thi
 
 Copyright (c) 2025 Neko (nekocode.in)
 
-Permission is granted to any individual who obtains a copy of this software and associated documentation files (the "Software") to use, modify, and run the Software for personal, private, and non-commercial purposes only.
+Permission is granted to any individual who obtains a copy of this software and associated documentation files (the "Software") to use, modify and run the Software for personal, private, and non-commercial purposes only. This includes using the Software to host and operate publicly accessible bots, provided such use remains non-commercial.
 
 The following restrictions apply:
 
