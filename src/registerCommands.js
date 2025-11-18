@@ -16,8 +16,44 @@ const rest = new REST({ version: "10" }).setToken(TOKEN);
 // Register global commands here
 const globalCommands = [
   {
+    name: "ban",
+    description: "Ban a user from the server",
+    options: [
+      {
+        name: "user",
+        description: "User you want to ban",
+        type: 6,
+        required: true,
+      },
+      {
+        name: "reason",
+        description: "Reason for the ban",
+        type: 3,
+        required: false,
+      }
+    ]
+  },
+  {
     name: "ping",
-    description: "Returns the latency of the bot",
+    description: "Returns the latency and hosting details of the bot",
+  },
+  {
+    name: "kick",
+    description: "Kick a user from the server",
+    options: [
+      {
+        name: "user",
+        description: "User to kick",
+        type: 6,
+        required: true,
+      },
+      {
+        name: "reason",
+        description: "Reason to kick the user",
+        type: 3,
+        required: false,
+      },
+    ],
   },
 ];
 
@@ -50,7 +86,6 @@ const guildCommands = [
   },
 ];
 
-
 export async function registerCommands() {
   try {
     console.log(`✅ Registering ${globalCommands.length} global commands...`);
@@ -70,7 +105,6 @@ export async function registerCommands() {
     console.error("❌ Error registering commands:", error);
   }
 }
-
 
 export const commandsGlobal = globalCommands;
 export const globalCommandsLength = globalCommands.length;
