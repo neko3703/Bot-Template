@@ -61,6 +61,7 @@ A simple and efficient template for creating a Discord bot using JavaScript. Thi
  ┃ ┣ 📂 commands     # Command files go here (slash and prefix both)
  ┃ ┣ 📂 events       # Event handler files go here
  ┃ ┣ 📂 interactions # Interaction (button and modal handlers) and messageCreate events
+ ┃ ┣ 📂 utils       # Utility handler files go here
  ┃ ┣ 📜 index.js     # Main bot entry point
  ┃ ┣ 📜 registerCommands.js # Slash command registration
  ┣ 📜 .env         # Environment variables
