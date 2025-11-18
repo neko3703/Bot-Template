@@ -39,8 +39,11 @@ A simple and efficient template for creating a Discord bot using JavaScript. Thi
    ```env
    TOKEN = BOT_TOKEN_HERE # Place your bot token here
    CLIENT_ID = 123456789 # Your bot ID
-   ClientSecret = YOUR_BOT_CLIENT_SECRET #Optional
+   ClientSecret = YOUR_BOT_CLIENT_SECRET # Client Secret
    GuildID = 123456789 # Your guild ID
+   GOOGLE_CLIENT_EMAIL = "XYZ" # Add from googleapis
+   GOOGLE_PRIVATE_KEY = "ABC" # Add from googleapis
+   DB_ID = "abcd1234" # Your google sheet ID for database
    ```
    More can be added as per needs
 
