@@ -60,7 +60,7 @@ A simple and efficient template for creating a Discord bot using JavaScript. Thi
  ┣ 📂 src            # Source folder containing bot logic
  ┃ ┣ 📂 commands     # Command files go here (slash and prefix both)
  ┃ ┣ 📂 events       # Event handler files go here
- ┃ ┣ 📂 interactions # Interaction (slash commands) handlers
+ ┃ ┣ 📂 interactions # Interaction (button and modal handlers) and messageCreate events
  ┃ ┣ 📜 index.js     # Main bot entry point
  ┃ ┣ 📜 registerCommands.js # Slash command registration
  ┣ 📜 .env         # Environment variables
@@ -77,11 +77,15 @@ A simple and efficient template for creating a Discord bot using JavaScript. Thi
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://mit-license.org/) file for details.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## Contact
 
-If you have any questions or suggestions, feel free to reach out at [contact@nekocode.in](mailto:contact@nekocode.in)!
+If you have any questions or suggestions, feel free to reach out at [contact@nekocode.in](mailto:contact@nekocode.in) or join my [discord](https://nekocode.in/discord)!
 
 ---
 Happy Coding! 🚀
