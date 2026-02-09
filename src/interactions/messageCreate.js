@@ -17,19 +17,18 @@ import {
 
 import afkCommand, { checkMentionAFK, clearAFK } from "../commands/afk.js";
 import { ghostPingCache } from "../utils/ghostPingCache.js";
+import { isBlacklisted } from "../utils/blacklist.js";
 
-// Bot's recognized prefixes
+// Bot prefixes
 const prefixes = ["!", "$", "?", ">"];
 
-// ------------------------------
-// REGEX + COOL DOWNS + HELPERS
-// ------------------------------
-const linkRegex = /\b(?:(?:https?:\/\/|www\.)[^\s]+|discord\.gg\/[A-Za-z0-9-]+)\b/i; // For detecting a link
-const msgLinkRegex = /https?:\/\/(?:canary\.)?discord(?:app)?\.com\/channels\/(\d+)\/(\d+)\/(\d+)/g; // For detecting a discord message link
-const tokenRegex = /[\w-]{24}\.[\w-]{6}\.[\w-]{25,}/; // For detecting discord user/bot tokens
+// Regex & helpers
+const linkRegex = /\b(?:(?:https?:\/\/|www\.)[^\s]+|discord\.gg\/[A-Za-z0-9-]+)\b/i;
+const msgLinkRegex = /https?:\/\/(?:canary\.)?discord(?:app)?\.com\/channels\/(\d+)\/(\d+)\/(\d+)/g;
+const tokenRegex = /[\w-]{24}\.[\w-]{6}\.[\w-]{25,}/;
 
 const cooldowns = new Map();
-const processedMessages = new Set();
+const processedMessages = new Set(); // To prevent duplicate processing 
 
 function escapeForRegex(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -55,14 +54,14 @@ function matchesKeyword(text, keyword) {
   }
 }
 
-// ------------------------------
-// MAIN MERGED EXPORT
-// ------------------------------
+// ----------------------------------------------------
+// MAIN EXPORT
+// ----------------------------------------------------
 export default async (client, message, commands) => {
   try {
     if (!message || message.author.bot) return;
 
-    // Prevent double-trigger from double messageCreate events
+    // Prevent duplicate triggers
     if (processedMessages.has(message.id)) return;
     processedMessages.add(message.id);
     setTimeout(() => processedMessages.delete(message.id), 10_000);
@@ -70,9 +69,9 @@ export default async (client, message, commands) => {
     const content = message.content || "";
     const lower = content.toLowerCase().trim();
 
-    // ------------------------------
+    // ----------------------------------------------------
     // 1) MODMAIL (DM HANDLING)
-    // ------------------------------
+    // ----------------------------------------------------
     if (message.channel.type === ChannelType.DM) {
       try {
         const guild = client.guilds.cache.get("765170694514016297");
@@ -80,7 +79,7 @@ export default async (client, message, commands) => {
 
         const member = await guild.members.fetch(message.author.id).catch(() => null);
         if (!member) {
-          return await message.reply({
+          return message.reply({
             embeds: [
               new EmbedBuilder()
                 .setColor("Red")
@@ -90,12 +89,12 @@ export default async (client, message, commands) => {
           });
         }
 
-        // Cooldown (30 seconds)
+        // Cooldown (30s)
         const cdKey = `modmail_${message.author.id}`;
         const last = cooldowns.get(cdKey);
         if (last && Date.now() - last < 30_000) {
           const remaining = Math.ceil((30_000 - (Date.now() - last)) / 1000);
-          return await message.reply(
+          return message.reply(
             `⏳ Please wait **${remaining}s** before sending another message.`
           );
         }
@@ -125,23 +124,21 @@ export default async (client, message, commands) => {
           embeds: [embed],
         });
 
-        await message.reply("✅ Your message has been sent to the moderators.");
+        return message.reply("✅ Your message has been sent to the moderators.");
       } catch (err) {
         console.error("ModMail Error:", err);
-        message.reply("⚠️ Failed to send your message.");
+        return message.reply("⚠️ Failed to send your message.");
       }
-
-      return;
     }
 
-    // ------------------------------
-    // 2) GUILD-ONLY HANDLING STARTS
-    // ------------------------------
+    // ----------------------------------------------------
+    // 2) GUILD-ONLY HANDLING
+    // ----------------------------------------------------
     if (!message.guild) return;
 
-    // ------------------------------
-    // 3) LINK BLOCKER (specific guild)
-    // ------------------------------
+    // ----------------------------------------------------
+    // LINK BLOCKER (Specific guild)
+    // ----------------------------------------------------
     if (message.guild.id === "765170694514016297") {
       try {
         const allowed = ["1118262411049312421", "816699693731676161", "1022422822716461139"];
@@ -149,16 +146,16 @@ export default async (client, message, commands) => {
 
         if (linkRegex.test(content) && !isAllowed) {
           await message.delete().catch(() => {});
-          return await message.channel.send(`❌ ${message.author}, sharing links is not allowed here.`);
+          return message.channel.send(`❌ ${message.author}, sharing links is not allowed here.`);
         }
       } catch (err) {
         console.error("Link filter error:", err);
       }
     }
 
-    // ------------------------------
-    // 4) GHOST PING SNAPSHOT
-    // ------------------------------
+    // ----------------------------------------------------
+    // GHOST PING SNAPSHOT
+    // ----------------------------------------------------
     try {
       const mentionedUsers = [...message.mentions.users.keys()];
       const mentionedRoles = [...message.mentions.roles.keys()];
@@ -177,9 +174,9 @@ export default async (client, message, commands) => {
       console.error("Ghost ping error:", err);
     }
 
-    // ------------------------------
-    // 5) QUOTE MESSAGE LINKS
-    // ------------------------------
+    // ----------------------------------------------------
+    // QUOTE MESSAGE LINKS
+    // ----------------------------------------------------
     try {
       const links = [...content.matchAll(msgLinkRegex)];
       for (const match of links) {
@@ -211,9 +208,9 @@ export default async (client, message, commands) => {
       }
     } catch {}
 
-    // ------------------------------
-    // 6) TOKEN DETECTION
-    // ------------------------------
+    // ----------------------------------------------------
+    // TOKEN DETECTION
+    // ----------------------------------------------------
     try {
       if (tokenRegex.test(content)) {
         const embed = new EmbedBuilder()
@@ -234,9 +231,96 @@ export default async (client, message, commands) => {
       console.error("Token detection error:", err);
     }
 
-    // ------------------------------
-    // 7) BOT MENTION → RESPONSE
-    // ------------------------------
+    // ----------------------------------------------------
+    // AFK MENTION CHECK
+    // ----------------------------------------------------
+    try {
+      for (const user of message.mentions.users.values()) {
+        const afk = await checkMentionAFK(user.id);
+        if (afk) {
+          const timeAgo = `<t:${Math.floor(afk.time / 1000)}:R>`;
+          await message.channel.send(
+            `📢 **${user.tag}** is AFK: *${afk.reason}* (since ${timeAgo})`
+          );
+        }
+      }
+    } catch (err) {
+      console.error("AFK mention error:", err);
+    }
+
+    // ----------------------------------------------------
+    // CLEAR AFK
+    // ----------------------------------------------------
+    try {
+      const selfAFK = await checkMentionAFK(message.author.id);
+      if (selfAFK && !prefixes.some((p) => lower.startsWith(p + "afk"))) {
+        await clearAFK(message.author.id);
+        await message.reply("✅ You are no longer AFK.");
+      }
+    } catch (err) {
+      console.error("AFK clear error:", err);
+    }
+
+    // ----------------------------------------------------
+    // ACHIEVEMENT SYSTEM
+    // ----------------------------------------------------
+    try {
+      const achievements = [
+        { title: "Certified Clueless", keyword: "idk", key: "idk", count: 15, desc: "You're lost… I'm lost… we're all lost." },
+        { title: "Curious George", keyword: "?", key: "questionMark", count: 10, desc: "So many questions… so little patience." },
+        { title: "Apex of Disappointment", keyword: "bruh", key: "bruhPeak", count: 25, desc: "You have reached the apex of disappointment." },
+        { title: "Emotional Damage", keyword: "cry", key: "cry", count: 10, desc: "Emotionally unstable, but in HD." },
+        { title: "Question Overload", keyword: "why", key: "why", count: 10, desc: "Why do you ask so many questions?" },
+        { title: "Drama Unleashed", keyword: "noooo", key: "noooo", count: 5, desc: "The drama is strong with this one." },
+        { title: "Emojiglyphic Scholar", emojiOnly: true, key: "emojiOnly", count: 25, desc: "Communicating in pure hieroglyphics." },
+        { title: "Keyboard Warrior", keyword: "!!!", key: "exclamations", count: 5, desc: "Calm your keyboard, warrior." },
+        { title: "Capslock Creature", keyword: "AAAA", key: "caps", count: 5, desc: "Your caps lock needs therapy." },
+        { title: "Socially Desperate", keyword: "hello", key: "hello", count: 10, desc: "You talk a lot… suspiciously a lot." },
+        { title: "Down Bad Certified", keyword: "love you", key: "loveYou", count: 3, desc: "Down bad detected. Stay hydrated." },
+        { title: "Bot’s Bestie", keyword: "hi bot", key: "hiBot", count: 10, desc: "We besties now." },
+        { title: "The Philosopher", keyword: "huh", key: "huh", count: 10, desc: "Mind empty. Brain smooth." },
+        { title: "Intensity Level: Unnecessary", keyword: "omg", key: "omg", count: 10, desc: "Intensity unmatched, purpose unknown." },
+        { title: "JavaScript Survivor", keyword: "javascript", key: "js", count: 5, desc: "You willingly chose pain. Respect." },
+        { title: "Python Skeptic", keyword: "python", key: "python", count: 5, desc: "Spaces bad. Anger good." },
+        { title: "TypeScript Purist", keyword: "typescript", key: "ts", count: 5, desc: "Your code is safe. Your sanity isn’t." },
+        { title: "The Dot Master", keyword: ".", key: "singleDot", count: 10, desc: "Peak “no thoughts, just dots.”" },
+        { title: "Grammar Menace", keyword: "u", key: "u", count: 30, desc: "Grammar police have given up." },
+      ];
+
+      const seen = new Set();
+
+      for (const a of achievements) {
+        if (a.emojiOnly) {
+          const isEmoji = /^[\p{Extended_Pictographic}\p{Emoji}]+$/u.test(content);
+          if (!isEmoji) continue;
+
+          if (seen.has(a.key)) continue;
+          seen.add(a.key);
+
+          const count = await incrementCounter(message.author.id, a.key).catch(() => null);
+          if (count === a.count) {
+            await unlockAchievement(message.author.id, message.channel, a.title, a.desc);
+          }
+          continue;
+        }
+
+        if (!matchesKeyword(lower, a.keyword)) continue;
+        if (seen.has(a.key)) continue;
+
+        seen.add(a.key);
+
+        const count = await incrementCounter(message.author.id, a.key).catch(() => null);
+        if (count === a.count) {
+          await unlockAchievement(message.author.id, message.channel, a.title, a.desc);
+        }
+      }
+    } catch (err) {
+      console.error("Achievement error:", err);
+    }
+
+    // ----------------------------------------------------
+    // BOT MENTION RESPONSE
+    // ----------------------------------------------------
     try {
       const botMention = `<@${client.user.id}>`;
       if (lower.includes(botMention)) {
@@ -244,7 +328,11 @@ export default async (client, message, commands) => {
           "You can mention me directly to check my prefixes!",
           "Try using Slash Commands for a smoother experience!",
           "Looking for a specific feature? Try /help to find relevant commands!",
-          "Want to report a bug or suggest a feature? Contact my developer at contact@nekocode.in",
+          "Want to report a bug? Use /report-issue",
+          "Did you know? You can use the prefix command quote!",
+          "Use /info for bot stats!",
+          "Try the prefix command nasa for NASA images!",
+          "Need help? Use /raise-ticket!",
         ];
 
         const randomTip = tips[Math.floor(Math.random() * tips.length)];
@@ -258,17 +346,16 @@ export default async (client, message, commands) => {
         }
 
         const embed = new EmbedBuilder()
-          .setColor("#ffcc00") // Vibrant color
-          .setTitle("👋 **Hey there, traveler!**")
+          .setColor("#ffcc00")
+          .setTitle("👋 Hey there!")
           .setDescription(
             `✨ **Greetings, ${message.author.username}!**\n\n` +
             "🚀 **I am here to assist you!**\n" +
             `🔹 My prefixes are: ${prefixes.map(p => `\`${p}\``).join(", ")}\n` +
-            "🔹 Need help? Use **`/help`** to see what I can do!\n" +
-            `💡 **Pro Tip:** ${randomTip}` // Random pro tip
+            "🔹 Need help? Use **`/help`**!\n" +
+            `💡 **Pro Tip:** ${randomTip}`
           )
           .setThumbnail(client.user.displayAvatarURL({ dynamic: true, size: 256 }))
-          .setImage("https://media.tenor.com/Ufgw1b8oylYAAAAC/discord.gif")
           .addFields(
             { name: "📡 Servers", value: `${client.guilds.cache.size}`, inline: true },
             { name: "👥 Users", value: `${totalMembers}`, inline: true },
@@ -276,7 +363,7 @@ export default async (client, message, commands) => {
           )
           .setFooter({
             text: "Your friendly bot assistant ✨",
-            iconURL: client.user.displayAvatarURL({ dynamic: true }),
+            iconURL: client.user.displayAvatarURL(),
           });
 
         const row = new ActionRowBuilder().addComponents(
@@ -292,9 +379,9 @@ export default async (client, message, commands) => {
       console.error("Bot mention handler error:", err);
     }
 
-    // ------------------------------
-    // 8) CUSTOM PREDEFINED RESPONSES
-    // ------------------------------
+    // ----------------------------------------------------
+    // CUSTOM PREDEFINED RESPONSES
+    // ----------------------------------------------------
     try {
       const responses = {
         welcome: { triggers: ["thank you", "thanks", "thx"], response: "https://tenor.com/view/disney-moana-youre-welcome-maui-dance-gif-15810606" },
@@ -313,17 +400,22 @@ export default async (client, message, commands) => {
       console.error("Custom responses error:", err);
     }
 
-    // ------------------------------
-    // 9) PREFIX COMMAND HANDLER
-    // ------------------------------
+    // ----------------------------------------------------
+    // PREFIX COMMAND HANDLER (BLACKLIST CHECK HERE ONLY)
+    // ----------------------------------------------------
     try {
       const prefix = prefixes.find((p) => lower.startsWith(p));
       if (!prefix) return;
 
+      // 🚫 BLACKLIST CHECK — **ONLY BLOCK BOT COMMANDS**
+      if (await isBlacklisted(message.author.id)) {
+        return message.reply("🚫 You are blacklisted from using bot commands.").catch(() => {});
+      }
+
       const args = lower.slice(prefix.length).trim().split(/ +/);
       const commandName = args.shift().toLowerCase();
 
-      // Prevent prefix usage for slash commands
+      // Prevent using prefix for slash commands
       const slashNames = [
         ...commandsGlobal.map((x) => x.name),
         ...commandsGuild.map((x) => x.name),
@@ -337,11 +429,12 @@ export default async (client, message, commands) => {
       if (!cmd) return;
 
       await message.channel.sendTyping();
-      await cmd(client, message, args);
+      await cmd(client, message, args, commands);
     } catch (err) {
       console.error("Prefix command error:", err);
       message.reply("❌ Error running command.");
     }
+
   } catch (fatal) {
     console.error("FATAL messageCreate error:", fatal);
   }
