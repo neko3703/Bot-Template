@@ -5,9 +5,10 @@ import { fileURLToPath, pathToFileURL } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/* ---------- helpers ---------- */
 async function freshImport(filePath) {
-  const fileUrl = pathToFileURL(filePath).href;
-  return import(`${fileUrl}?update=${Date.now()}`);
+  const url = pathToFileURL(filePath).href;
+  return import(`${url}?update=${Date.now()}`);
 }
 
 function safeReadDir(dir) {
@@ -15,10 +16,8 @@ function safeReadDir(dir) {
   return fs.readdirSync(dir);
 }
 
-/* ================= COMMANDS ================= */
-/* Uses YOUR commands Map */
+/* ---------- commands ---------- */
 export async function reloadCommands(commands) {
-  // 🔒 HARD SAFETY CHECK
   if (!(commands instanceof Map)) {
     console.warn(
       "[reloadCommands] Aborted: commands is not a Map. Type:",
@@ -33,19 +32,17 @@ export async function reloadCommands(commands) {
     if (!file.endsWith(".js")) continue;
 
     try {
-      const filePath = path.join(dir, file);
-      const { default: command } = await freshImport(filePath);
-      if (!command) continue;
+      const { default: cmd } = await freshImport(path.join(dir, file));
+      if (!cmd) continue;
 
-      const name = file.replace(".js", "");
-      commands.set(name, command);
+      commands.set(file.replace(".js", ""), cmd);
     } catch (err) {
       console.error(`[reloadCommands] Failed: ${file}`, err);
     }
   }
 }
 
-/* ================= CONSTANTS ================= */
+/* ---------- constants ---------- */
 export async function reloadConstants() {
   const dir = path.join(__dirname, "../constants");
 
@@ -58,13 +55,12 @@ export async function reloadConstants() {
   }
 }
 
-/* ================= UTILS ================= */
+/* ---------- utils ---------- */
 export async function reloadUtils() {
   const dir = path.join(__dirname, "../utils");
 
   for (const file of safeReadDir(dir)) {
     if (!file.endsWith(".js")) continue;
-
     try {
       await freshImport(path.join(dir, file));
     } catch (err) {
@@ -73,61 +69,73 @@ export async function reloadUtils() {
   }
 }
 
-/* ================= STATE ================= */
+/* ---------- state (optional folder) ---------- */
 export async function reloadState() {
   const dir = path.join(__dirname, "../state");
-
-  // 🔒 You do not have a state folder — skip safely
-  if (!fs.existsSync(dir)) {
-    return;
-  }
+  if (!fs.existsSync(dir)) return;
 
   for (const file of safeReadDir(dir)) {
     if (!file.endsWith(".js")) continue;
 
     try {
-      const filePath = path.join(dir, file);
-      const mod = await freshImport(filePath);
-
-      // Optional lifecycle hook ONLY if it exists
-      if (typeof mod.initState === "function") {
-        mod.initState();
-      }
+      const mod = await freshImport(path.join(dir, file));
+      if (typeof mod.initState === "function") mod.initState();
     } catch (err) {
       console.error(`[reloadState] Failed: ${file}`, err);
     }
   }
 }
 
+/* ---------- interactions ---------- */
+export async function reloadInteractions(client, commands) {
+  const dir = path.join(__dirname, "../interactions");
+  if (!fs.existsSync(dir)) return;
 
-/* ================= EVENTS ================= */
-/* DOES NOT touch messageCreate (matches your logic) */
+  for (const file of fs.readdirSync(dir)) {
+    if (!file.endsWith(".js")) continue;
+
+    const eventName = file.replace(".js", "");
+    const filePath = path.join(dir, file);
+
+    try {
+      const { default: handler } = await freshImport(filePath);
+
+      client.removeAllListeners(eventName);
+
+      if (eventName === "messageCreate") {
+        client.on(eventName, (msg) =>
+          handler(client, msg, commands)
+        );
+      } else {
+        client.on(eventName, (...args) =>
+          handler(client, ...args, commands)
+        );
+      }
+
+      console.log(`🔁 Interaction reloaded: ${eventName}`);
+    } catch (err) {
+      console.error(`[reloadInteractions] Failed: ${file}`, err);
+    }
+  }
+}
+
+/* ---------- events ---------- */
 export async function reloadEvents(client) {
   const dir = path.join(__dirname, "../events");
+  if (!fs.existsSync(dir)) return;
 
-  for (const file of safeReadDir(dir)) {
+  for (const file of fs.readdirSync(dir)) {
     if (!file.endsWith(".js")) continue;
 
     const eventName = file.replace(".js", "");
     if (eventName === "messageCreate") continue;
 
     try {
-      const filePath = path.join(dir, file);
-      const { default: handler } = await freshImport(filePath);
-
+      const { default: handler } = await freshImport(path.join(dir, file));
       client.removeAllListeners(eventName);
       client.on(eventName, (...args) => handler(client, ...args));
     } catch (err) {
       console.error(`[reloadEvents] Failed: ${file}`, err);
     }
   }
-}
-
-/* ================= MASTER ================= */
-export async function loadAll(client, commands) {
-  await reloadUtils();
-  await reloadConstants();
-  await reloadState();
-  await reloadCommands(commands);
-  await reloadEvents(client);
 }
