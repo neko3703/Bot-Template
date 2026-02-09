@@ -1,3 +1,5 @@
+// ⚠️ Do not remove this file from your template as this is required to reload the commands manually if the bot does not do it automatically
+
 import {
   reloadCommands,
   reloadEvents,
