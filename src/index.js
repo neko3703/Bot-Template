@@ -22,6 +22,7 @@ import { fileURLToPath } from "url";
 import uptimeCommand, { onDisconnect, onReconnect, beforeShutdown } from "./commands/uptime.js";
 import { loadAll } from "./handlers/reloader.js";
 import { autoReload } from "./handlers/autoReload.js";
+import { watchAndReload } from "./handlers/watchReload.js";
 
 // --- Init ---
 config();
@@ -111,9 +112,12 @@ cron.schedule("0 7 * * *", () => runDailyTask(client), {
 });
 
 // Update code every minute to pick up changes without restart
-cron.schedule("* * * * * *", async () => {
-  await autoReload(client, commands);
-});
+// cron.schedule("* * * * * *", async () => {
+//   await autoReload(client, commands);
+// });
+
+console.log("NODE_ENV =", process.env.NODE_ENV);
+watchAndReload(client, commands);
 
 await loadAll(client, commands);
 
