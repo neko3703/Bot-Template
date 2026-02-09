@@ -1,6 +1,7 @@
 import {
   reloadCommands,
   reloadEvents,
+  reloadInteractions,
   reloadState,
   reloadUtils,
   reloadConstants,
@@ -9,7 +10,6 @@ import {
 let isReloading = false;
 
 export async function autoReload(client, commands) {
-  // 🔒 Prevent overlapping reloads
   if (isReloading) return;
   isReloading = true;
 
@@ -18,6 +18,7 @@ export async function autoReload(client, commands) {
     await reloadConstants();
     await reloadState();
     await reloadCommands(commands);
+    await reloadInteractions(client, commands);
     await reloadEvents(client);
   } catch (err) {
     console.error("🔥 Auto reload failed:", err);
