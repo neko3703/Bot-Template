@@ -1,47 +1,24 @@
-// ⚠️ Do not remove this file from your template as this is required to reload the commands manually if the bot does not do it automatically
+import { autoReload } from "../handlers/autoReload.js";
 
-import {
-  reloadCommands,
-  reloadEvents,
-  reloadState,
-  reloadUtils,
-  reloadConstants,
-} from "../handlers/reloader.js";
+let lastReload = 0;
 
 export default async (client, message, args, commands) => {
-  if (message.author.id !== process.env.BOT_OWNER_ID) { // Replace with your discord ID
+  if (message.author.id !== process.env.BOT_OWNER_ID) {
     return message.reply("❌ Admin only.");
   }
 
-  const target = args[0];
-  if (!target) {
-    return message.reply("Usage: `!reload all`");
+  const now = Date.now();
+  if (now - lastReload < 5000) {
+    return message.reply("⏳ Please wait 5 seconds between reloads.");
   }
 
+  lastReload = now;
+
   try {
-    if (target === "all") {
-      await reloadUtils();
-      await reloadConstants();
-      await reloadState();
-      await reloadCommands(commands); 
-      await reloadEvents(client);
-
-      return message.reply("♻️ All files reloaded successfully.");
-    }
-
-    if (target === "commands") {
-      await reloadCommands(commands); 
-      return message.reply("♻️ Commands reloaded.");
-    }
-
-    if (target === "events") {
-      await reloadEvents(client);
-      return message.reply("♻️ Events reloaded.");
-    }
-
-    return message.reply("❌ Invalid reload target.");
+    await autoReload(client, commands);
+    return message.reply("♻️ Reload completed.");
   } catch (err) {
     console.error("Reload command error:", err);
-    return message.reply("❌ Reload failed. Check console.");
+    return message.reply("❌ Reload failed.");
   }
 };
