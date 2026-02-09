@@ -1,17 +1,18 @@
 import chokidar from "chokidar";
 import path from "path";
+import { fileURLToPath } from "url";
 import { autoReload } from "./autoReload.js";
 
-let reloadTimer = null;
-let isReloading = false;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export function watchAndReload(client, commands) {
   const watchPaths = [
-    "src/commands",
-    "src/events",
-    "src/interactions",
-    "src/utils",
-    "src/constants",
+    path.resolve(__dirname, "../commands"),
+    path.resolve(__dirname, "../events"),
+    path.resolve(__dirname, "../interactions"),
+    path.resolve(__dirname, "../utils"),
+    path.resolve(__dirname, "../constants"),
   ];
 
   const watcher = chokidar.watch(watchPaths, {
@@ -22,26 +23,12 @@ export function watchAndReload(client, commands) {
     },
   });
 
-  watcher.on("all", async (event, filePath) => {
-    // Ignore temporary files
-    if (!filePath.endsWith(".js")) return;
+  watcher.on("all", async (event, file) => {
+    if (!file.endsWith(".js")) return;
 
-    // Debounce
-    clearTimeout(reloadTimer);
-    reloadTimer = setTimeout(async () => {
-      if (isReloading) return;
-      isReloading = true;
-
-      try {
-        console.log("🔄 File changed:", path.basename(filePath));
-        await autoReload(client, commands);
-        console.log("✅ Hot reload complete");
-      } catch (err) {
-        console.error("🔥 Hot reload failed:", err);
-      } finally {
-        isReloading = false;
-      }
-    }, 500);
+    console.log("🔄 File changed:", path.basename(file));
+    await autoReload(client, commands);
+    console.log("✅ Hot reload complete");
   });
 
   console.log("👀 Hot reload watcher started");
