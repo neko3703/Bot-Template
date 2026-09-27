@@ -20,56 +20,48 @@ A simple and efficient template for creating a Discord bot using JavaScript. Thi
 
 1. **Clone the repository**
 
-   ```bash
+   npm init -y
+
    git clone https://github.com/neko3703/Bot-Template.git
    cd Bot-Template
-   npm init -y
-   ```
 
 2. **Install dependencies**
 
-   ```bash
    npm install discord.js@latest
-   ```
 
 3. **Set up environment variables**
 
    A `.env` file has already been created in the root directory. Here, you can add your bot's token, bot's ID, bot's client secret (optional) and guild ID of your server to start with:
 
-   ```env
-   TOKEN = BOT_TOKEN_HERE # Place your bot token here
-   CLIENT_ID = 123456789 # Your bot ID
-   ClientSecret = YOUR_BOT_CLIENT_SECRET # Client Secret
-   BOT_OWNER_ID = 123456789 # Your discord ID
-   GuildID = 123456789 # Your guild ID
-   GOOGLE_CLIENT_EMAIL = "XYZ" # Add from googleapis
-   GOOGLE_PRIVATE_KEY = "ABC" # Add from googleapis
-   DB_ID = "abcd1234" # Your google sheet ID for database
-   MODMAIL_LOG_CHANNEL = "1234567890"
-   ```
-   More can be added as per needs
+       TOKEN = BOT_TOKEN_HERE
+       CLIENT_ID = 123456789
+       ClientSecret = YOUR_BOT_CLIENT_SECRET
+       BOT_OWNER_ID = 123456789
+       GuildID = 123456789
+       GOOGLE_CLIENT_EMAIL = "XYZ"
+       GOOGLE_PRIVATE_KEY = "ABC"
+       DB_ID = "abcd1234"
+       MODMAIL_LOG_CHANNEL = "1234567890"
+
+   More can be added as per needs.
 
 4. **Run the bot**
 
-   ```bash
    node index.js
-   ```
 
 ## Folder Structure
 
-```
-📦 YOUR_REPO_NAME
- ┣ 📂 src            # Source folder containing bot logic
- ┃ ┣ 📂 commands     # Command files go here (slash and prefix both)
- ┃ ┣ 📂 events       # Event handler files go here
- ┃ ┣ 📂 interactions # Interaction (button and modal handlers) and messageCreate events
- ┃ ┣ 📂 utils       # Utility handler files go here
- ┃ ┣ 📜 index.js     # Main bot entry point
- ┃ ┣ 📜 registerCommands.js # Slash command registration
- ┣ 📜 .env         # Environment variables
- ┣ 📜 package.json # Dependencies and metadata
- ┗ 📜 README.md    # Documentation
-```
+    📦 YOUR_REPO_NAME
+     ┣ 📂 src            # Source folder containing bot logic
+     ┃ ┣ 📂 commands     # Command files go here (slash and prefix both)
+     ┃ ┣ 📂 events       # Event handler files go here
+     ┃ ┣ 📂 interactions # Interaction (button and modal handlers) and messageCreate events
+     ┃ ┣ 📂 utils         # Utility handler files go here
+     ┃ ┣ 📜 index.js      # Main bot entry point
+     ┃ ┣ 📜 registerCommands.js # Slash command registration
+     ┣ 📜 .env            # Environment variables
+     ┣ 📜 package.json    # Dependencies and metadata
+     ┗ 📜 README.md       # Documentation
 
 ## Usage
 
@@ -86,5 +78,20 @@ This project is licensed under the terms outlined in the [LICENSE.md](https://gi
 
 If you have any questions or suggestions, feel free to reach out at [contact@nekocode.in](mailto:contact@nekocode.in) or join my [discord](https://nekocode.in/discord)!
 
+## 🔗 🏆 Development Team
+
+<table>
+	<tr>
+		<td align="center" width="33%">
+			<img src="https://cdn.discordapp.com/attachments/826750466485780492/1513198613638152202/nbx84v327t11.png?ex=6ab9dac7&is=6ab88947&hm=90b88e67cc7c87d1db2a8d8ef3f3ea3ab504783e5e88b8dd005bb4a0c096f323&" width="100px"
+				style="border-radius:50%" /><br />
+			<b>Neko</b><br />
+			<i>Creator & Lead Developer</i><br />
+			<sub>He/Him</sub><br />
+			<a href="[https://github.com/name-shitty-github-profile](https://nekocode.in)">Neko Code</a>
+		</td>	
+</table>
+
 ---
+
 Happy Coding! 🚀
